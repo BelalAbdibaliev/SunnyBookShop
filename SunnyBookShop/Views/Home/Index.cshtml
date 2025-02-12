@@ -1,0 +1,99 @@
+﻿@model SunnyBookShop.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    <h3 class="mt-3 mb-3 header-text-theme">New and Noteworthy</h3>
+    <div class="mb-5 d-flex justify-content-start align-content-center gap-3 align-items-center flex-wrap">
+        @foreach (var book in Model.NewBooks)
+        {
+            <div>
+                <a class="bookcard-link" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id">
+                    <div class="bookcard">
+                        <object class="bookcard-image" data="~/assets/posters/@book.PosterUrl" type="image/jpeg">
+                            <img src="~/assets/aot.jpg" alt="poster"/>
+                        </object>
+                        <div class="bookcard-body">
+                            <p class="bookcard-title">@book.Title</p>
+                            <p class="bookcard-text">@book.Author</p>
+                            <p class="bookcard-price">@book.Price$</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <h3 class="mt-3 mb-3 header-text-theme">Trending</h3>
+    <div class="mb-5 d-flex justify-content-start align-content-center gap-3 align-items-center flex-wrap">
+        @foreach (var book in Model.BestBooks)
+        {
+            <div>
+                <a class="bookcard-link" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id">
+                    <div class="bookcard">
+                        <object class="bookcard-image" data="~/assets/posters/@book.PosterUrl" type="image/jpeg">
+                            <img src="~/assets/aot.jpg" alt="poster"/>
+                        </object>
+                        <div class="bookcard-body">
+                            <p class="bookcard-title">@book.Title</p>
+                            <p class="bookcard-text">@book.Author</p>
+                            <p class="bookcard-price">@book.Price$</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <h3 class="mt-3 mb-3 header-text-theme">Cheap Books</h3>
+    <div class="mb-5 d-flex justify-content-start align-content-center gap-3 align-items-center flex-wrap">
+        @foreach (var book in Model.CheapBooks)
+        {
+            <div>
+                <a class="bookcard-link" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id">
+                    <div class="bookcard">
+                        <object class="bookcard-image" data="~/assets/posters/@book.PosterUrl" type="image/jpeg">
+                            <img src="~/assets/aot.jpg" alt="poster"/>
+                        </object>
+                        <div class="bookcard-body">
+                            <p class="bookcard-title">@book.Title</p>
+                            <p class="bookcard-text">@book.Author</p>
+                            <p class="bookcard-price">@book.Price$</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="row justify-content-center gap-3">
+        <div class="mini-cards col-3 d-flex p-2 align-items-center justify-content-center">
+            <div class="icon-size-md">
+                <i class="fa fa-truck" aria-hidden="true"></i>
+            </div>
+            <div class="mini-card-text">
+                <h5><b>Free</b> worldwide <b>delivery</b></h5>
+                <p>available with every order</p>
+            </div>
+        </div>
+        <div class="mini-cards col-3 d-flex p-2 align-items-center justify-content-center">
+            <div class="icon-size-md">
+                <i class="fa-sharp fa-solid fa-heart"></i>
+            </div>
+            <div class="mini-card-text">
+                <h5>Over <b>10 million</b></h5>
+                <p>books available online</p>
+            </div>
+        </div>
+        <div class="mini-cards col-3 d-flex p-2 align-items-center justify-content-center">
+            <div class="icon-size-md">
+                <i class="fa-solid fa-star"></i>
+            </div>
+            <div class="mini-card-text">
+                <h5>7,000+ <b>5 stars reviws</b></h5>
+                <p>on REVIEWS</p>
+            </div>
+        </div>
+    </div>
+</div>

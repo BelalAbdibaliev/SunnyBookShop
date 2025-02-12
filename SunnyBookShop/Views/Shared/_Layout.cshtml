@@ -1,0 +1,237 @@
+﻿@using System.Security.Claims;
+@{
+    _ = int.TryParse(User.FindFirst("UserId")?.Value, out int userId);
+    string? emailAdress = User.FindFirst(ClaimTypes.Email)?.Value;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] | Hokkaido Bookshop</title>
+    <link rel="stylesheet" href="~/SunnyBookshop.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/lib/fontawesome-free-6.4.0-web/css/fontawesome.min.css"/>
+    <link rel="stylesheet" href="~/lib/fontawesome-free-6.4.0-web/css/all.min.css"/>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/assets/logo.png" alt="ASAP" width="150"/>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav">
+                    <li class="m-1">
+                        <div class="dropdown">
+                            <button type="button" class="dropdown-toggle btn-transparent" data-bs-toggle="dropdown">
+                                Fiction
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-header text-decoration-none" asp-controller="Books"
+                                       asp-action="Index"
+                                       asp-route-category="0">Fiction</a>
+                                </li>
+                                <li><a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="0" asp-route-subcategory="Romance">Romance</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="0" asp-route-subcategory="Historical+Fiction">Historical
+                                        Fiction</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="0" asp-route-subcategory="Sci-Fi">Sci-Fi</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="0" asp-route-subcategory="Thrillere">Thriller</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="0" asp-route-subcategory="Manga">Manga</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="0" asp-route-subcategory="Classic">Classic</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="0" asp-route-subcategory="Fantasy">Fantasy</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="m-1">
+                        <div class="dropdown">
+                            <button type="button" class="btn-transparent dropdown-toggle" data-bs-toggle="dropdown">
+                                Non-Fiction
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-header text-decoration-none" asp-controller="Books"
+                                       asp-action="Index"
+                                       asp-route-category="1">Non-Fiction</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="1" asp-route-subcategory="Biographies">Biographies</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="1" asp-route-subcategory="Health+and+Lifestyle">Health and
+                                        Lifestyle</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="1" asp-route-subcategory="Art,+Creative">Art, Creative</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="1" asp-route-subcategory="Religion">Religion</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="m-1">
+                        <div class="dropdown">
+                            <button type="button" class="btn-transparent dropdown-toggle" data-bs-toggle="dropdown">
+                                Education
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-header text-decoration-none" asp-controller="Books"
+                                       asp-action="Index"
+                                       asp-route-category="2">Education</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="2" asp-route-subcategory="Languages">Languages</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="2" asp-route-subcategory="Medical">Medical</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="2" asp-route-subcategory="Mathematics">Mathematics</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="2" asp-route-subcategory="Sciences">Sciences</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Books" asp-action="Index"
+                                       asp-route-category="2" asp-route-subcategory="Physical+Education">Physical
+                                        Education</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <form asp-controller="Books" asp-action="Index" method="get">
+                    <div class="searchbox m-2">
+                        <input name="searchString" type="text" class="form-control" placeholder="Search"/>
+                    </div>
+                </form>
+                <div>
+                    @if (User.Identity!.IsAuthenticated)
+                    {
+                        <a asp-controller="User" asp-action="Cart" class="btn rounded-3 btn-outline-primary">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                        <a asp-controller="User" asp-action="Profile" asp-route-id="@userId"
+                           class="btn rounded-3 btn-outline-primary">
+                            <i class="fa-solid fa-user"></i>
+                        </a>
+                        <a asp-controller="Home" asp-action="Logout" class="btn btn-danger">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Log Out
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Home" asp-action="Login" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-user"></i>
+                            Log In
+                        </a>
+                        <a asp-controller="Home" asp-action="Signup" class="btn btn-primary">
+
+                            Sign Up
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container main-container-margin">
+    <main role="main" class="pb-5">
+        @RenderBody()
+    </main>
+</div>
+
+<!-- border-top footer text-muted -->
+<footer class="page-footer">
+    <div class="container footer-container">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="~/assets/logo.png" alt="logo"/>
+            </div>
+            <div>
+                <p>
+                    &copy; @DateTime.Now.Year Hokkaido Corporation. All rights reserved. All trademarks are property of
+                    their
+                    respective owners in the US and other countries. VAT included in all prices where applicable.
+                    <a href="">Privacy Policy</a>
+                    <span>|</span>
+                    <a href="">Legal</a>
+                    <span>|</span>
+                    <a href="">Subscriber Agreement</a>
+                    <span>|</span>
+                    <a href="">Refunds</a>
+                    <span>|</span>
+                    <a href="">Cookies</a>
+                </p>
+            </div>
+            <div class="footer-logo">
+                <img src="~/assets/logo.png" alt="logo"/>
+            </div>
+        </div>
+        <div class="footer-bot">
+            <a href="">About Hokkaido</a>
+            <span>|</span>
+            <a href="">Jobs</a>
+            <span>|</span>
+            <a href="">Our team</a>
+            <span>|</span>
+            <a href="">Hokkaido Exclusives</a>
+            <span>|</span>
+            <a href="">Support</a>
+            <span>|</span>
+            <a href="">Gift Cards</a>
+            <span>|</span>
+            <a href="">Twitter</a>
+            <span>|</span>
+            <a href="">Instagram</a>
+        </div>
+    </div>
+</footer>
+
+<script src="~/jquery/jquery.slim.min.js"></script>
+<script src="~/lib/popper/umd/popper.min.js"></script>
+<script src="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,36 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<link rel="stylesheet" href="~/css/home/login.css" asp-append-version="true"/>
+
+<div class="login-container">
+    <div class="login-container-poster">
+        <img src="~/assets/aot2.jpg" alt="poster"/>
+    </div>
+    <div>
+        <div class="login-form">
+            <img src="~/assets/logo.png" alt="logo"/>
+            <h4>Create your account</h4>
+            <form asp-controller="Home" asp-action="SignUp" method="post">
+                <input class="form-control" asp-for="Email" type="email" placeholder="Email adress"/>
+                <input class="form-control" asp-for="Password" type="password" placeholder="Password"/>
+                <input class="form-control" asp-for="ConfirmPassword" type="password"
+                       placeholder="Confirm your password"/>
+                <div class="login-form-checkbox">
+                    <input asp-for="TermsConditions" type="checkbox"/>
+                    <label class="text-wrap" asp-for="TermsConditions"></label>
+                </div>
+                <button class="btn btn-primary" type="submit">CREATE ACCOUNT</button>
+                <div class="my-validation-summary" asp-validation-summary="All"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function ($) {
+        $.validator.unobtrusive.adapters.addBool("checkboxrequired", "required");
+    }(jQuery));
+</script>
