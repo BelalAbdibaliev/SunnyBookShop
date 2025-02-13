@@ -49,7 +49,10 @@ public class HomeController : Controller
     {
         User? user = await _userService.AuthenticateAsync(inputData.Email, inputData.Password);
         if (user is null)
+        {
+            ModelState.AddModelError(inputData.Email, "Invalid Email or Password Address");
             return View(inputData);
+        }
         
         await _userService.Login(user, HttpContext);
 

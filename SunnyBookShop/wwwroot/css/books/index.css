@@ -1,0 +1,15 @@
+﻿.sort-controller p {
+    margin: 0;
+    padding: 0;
+}
+
+.sort-links a {
+    text-decoration: dashed underline;
+    margin: 0;
+    padding: 0;
+}
+
+.sort-links {
+    border-left: 7px solid dodgerblue;
+    padding-left: 10px;
+}

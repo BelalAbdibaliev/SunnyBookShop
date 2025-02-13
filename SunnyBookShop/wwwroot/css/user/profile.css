@@ -1,0 +1,72 @@
+﻿.profile-avatar-img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    box-shadow: 1px 1px 5px #888888;
+    border: 1px solid #383838;
+}
+
+.profile-avatar-div {
+    width: 250px;
+}
+
+.profile-user-name {
+    font-size: 30px;
+    font-weight: 600;
+    color: forestgreen;
+}
+
+.profile-user-status {
+    font-size: 13px;
+    color: forestgreen;
+    padding: 0px 5px;
+    border: 1px solid forestgreen;
+    border-radius: 15%;
+}
+
+.profile-info-details p {
+    color: steelblue;
+}
+
+.profile-user-admin-name {
+    font-size: 30px;
+    font-weight: 600;
+    color: red;
+}
+
+.profile-user-admin-status {
+    font-size: 13px;
+    color: red;
+    padding: 0px 5px;
+    border: 1px solid red;
+    border-radius: 15%;
+}
+
+.orders-container {
+    padding: 10px;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+}
+
+.orders-container p {
+    margin: 0px;
+    padding: 0px;
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+    border-bottom: 1px solid lightgray;
+}
+
+.profile-user-description {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}

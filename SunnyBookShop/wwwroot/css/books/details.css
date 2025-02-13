@@ -1,0 +1,225 @@
+﻿.book-showcase {
+    display: grid;
+    grid-template-columns: 350px auto 200px;
+}
+
+.book-image {
+    width: 350px;
+    height: 500px;
+}
+
+.book-image-img {
+    width: 350px;
+    height: 500px;
+    object-fit: cover;
+    border: 1px solid #888888;
+}
+
+.book-info {
+    margin: 0 50px;
+}
+
+.book-info-id {
+    font-size: 12px;
+    color: dimgray;
+}
+
+.book-info-title {
+    font-size: 30px;
+    font-weight: 600;
+    color: dodgerblue;
+}
+
+.book-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: 10px;
+}
+
+.book-info-price {
+    font-size: 40px;
+    font-weight: 700;
+    color: #d9472d;
+    text-align: center;
+}
+
+.book-controls form {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: 10px;
+}
+
+.header-text {
+    margin-bottom: 20px;
+    color: dodgerblue;
+    font-weight: 600;
+}
+
+
+.book-reviews {
+    display: flex;
+    flex-direction: column;
+}
+
+.book-review {
+    display: grid;
+    grid-template-columns: 70px auto;
+}
+
+.book-review-avatar-div {
+    width: 60px;
+    height: 60px;
+}
+
+.book-review-avatar img, .book-review-avatar {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 100%;
+}
+
+.book-review-user-review {
+    font-size: 25px;
+    margin: 0;
+    color: dodgerblue;
+    border-left: 4px solid dodgerblue;
+    width: 40px;
+    padding: 0 5px;
+    height: 40px;
+    text-align: center;
+}
+
+
+.book-review-content {
+}
+
+.book-review-datetime {
+    font-size: 11px;
+    color: dimgray;
+}
+
+.admin-panel, .admin-panel form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.admin-panel {
+    border: 1px solid red;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.admin-panel-header {
+    font-size: 1vw;
+    font-weight: 300;
+    text-align: center;
+    color: red;
+}
+
+.review-radio {
+    -webkit-appearance: none;
+}
+
+.review-radio-label {
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    border: 4px solid dodgerblue;
+    margin: auto;
+    border-radius: 10px;
+    position: relative;
+    color: dodgerblue;
+    transition: 0.5s;
+}
+
+.radio-neg {
+    color: #c80a0a;
+    border: 4px solid #c80a0a;
+}
+
+.radio-pos {
+    color: #16e934;
+    border: 4px solid #16e934;
+}
+
+.fa-review-custom {
+    font-size: 30px;
+}
+
+.radio-button-neg:checked + .review-radio-label {
+    background-color: #c80a0a;
+    color: #ffffff;
+    box-shadow: 0 15px 45px rgb(24, 249, 141, 0.2);
+}
+
+.radio-button-pos:checked + .review-radio-label {
+    background-color: #16e934;
+    color: #ffffff;
+    box-shadow: 0 15px 45px rgb(24, 249, 141, 0.2);
+}
+
+.radio-button-neg:hover + .review-radio-label {
+    background-color: #c80a0a;
+    color: #ffffff;
+    box-shadow: 0 15px 45px rgb(24, 249, 141, 0.2);
+}
+
+.radio-button-pos:hover + .review-radio-label {
+    background-color: #16e934;
+    color: #ffffff;
+    box-shadow: 0 15px 45px rgb(24, 249, 141, 0.2);
+}
+
+
+.book-review-username {
+    padding: 0;
+    margin: 0;
+}
+
+.book-review-user {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.book-review-user p {
+    margin: 0;
+}
+
+
+.review-body {
+    resize: none;
+}
+
+.btn-delete-comment {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 0;
+}
+
+.reviews-summary {
+    border-left: 7px solid dodgerblue;
+    padding-left: 10px;
+}
+
+.reviews-summary p {
+    font-size: 24px;
+    font-weight: 300;
+    margin: 0;
+}
+
+.reviews-summary span {
+    color: dimgray;
+    font-size: 14px;
+}
+
+.reviews-summary-info {
+    color: #0d6efd;
+    text-decoration: none;
+}

@@ -15,4 +15,8 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
+    </ItemGroup>
+
 </Project>

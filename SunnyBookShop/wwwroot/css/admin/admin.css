@@ -1,0 +1,12 @@
+﻿.admin-orders-list tr td {
+    padding: 10px;
+    border: 1px solid lightgray;
+}
+
+.admin-orders-list tr:first-child {
+    background-color: darkgray;
+}
+
+.admin-orders-list {
+    text-align: center;
+}
