@@ -1,4 +1,6 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Models;
 using SunnyBookShop.Persistence;
@@ -8,13 +10,15 @@ namespace SunnyBookShop.Services;
 
 public interface IUserService
 {
-     Task<User> GetUserAsync(string username, string password);
-     Task<Result<ClaimsPrincipal>> SignUp(User user, string claims);
+    Task<User?> AuthenticateAsync(string email, string password);
+     Task Login(User user, HttpContext httpContext);
+     Task<Result<ClaimsPrincipal>> SignUp(User user);
     
 }
 
 public class UserService: IUserService
 {
+    const string authScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     private readonly ApplicationDbContext _dbContext;
     
     public UserService(ApplicationDbContext dbContext)
@@ -22,18 +26,29 @@ public class UserService: IUserService
         _dbContext = dbContext;
     }
     
-    public async Task<User> GetUserAsync(string email, string password)
+    public async Task<User?> AuthenticateAsync(string email, string password)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
-        
-        return user;
+        return await _dbContext.Users.FirstOrDefaultAsync(u =>
+            u.Email == email && u.Password == password);
     }
 
-    public async Task<Result<ClaimsPrincipal>> SignUp(User user, string authScheme)
+    public async Task Login(User user, HttpContext httpContext)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim("UserId", user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role)
+        };
+        var claimsIdentity = new ClaimsIdentity(claims, authScheme);
+        await httpContext.SignInAsync(authScheme, new ClaimsPrincipal(claimsIdentity));
+    }
+
+    public async Task<Result<ClaimsPrincipal>> SignUp(User user)
     {
         var errors = new Dictionary<string, string>();
 
-        if (_dbContext.Users.Any(u => u.Email == user.Email))
+        if (await _dbContext.Users.AnyAsync(u => u.Email == user.Email))
         {
             errors["Email"] = "Email address is already in use.";
         }

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Models;
 using SunnyBookShop.Persistence;
 using SunnyBookShop.Services;
@@ -46,18 +47,11 @@ public class HomeController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login([Bind("Email", "Password")] User inputData, string? ReturnUrl)
     {
-        User? user = await _userService.GetUserAsync(inputData.Email, inputData.Password);
+        User? user = await _userService.AuthenticateAsync(inputData.Email, inputData.Password);
         if (user is null)
             return View(inputData);
-
-        var claims = new List<Claim>
-        {
-            new Claim("UserId", user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
-        var claimsIdentity = new ClaimsIdentity(claims, authScheme);
-        await HttpContext.SignInAsync(authScheme, new ClaimsPrincipal(claimsIdentity));
+        
+        await _userService.Login(user, HttpContext);
 
         return LocalRedirect(ReturnUrl ?? "/");
     }
@@ -81,7 +75,7 @@ public class HomeController : Controller
         if (!ModelState.IsValid)
             return View(user);
 
-        var result = await _userService.SignUp(user, authScheme);
+        var result = await _userService.SignUp(user);
         if (!result.IsSuccess)
         {
             foreach (var error in result.Errors)
@@ -91,7 +85,6 @@ public class HomeController : Controller
             return View(user);
         }
         await HttpContext.SignInAsync(authScheme, result.Value);
-
         return LocalRedirect("/");
     }
 
