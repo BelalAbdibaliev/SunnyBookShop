@@ -9,6 +9,8 @@ namespace SunnyBookShop.Services;
 public interface IBookService
 {
     Task<HomeViewModel> GetHomeBooksAsync();
+    Task<BookIndexViewModel> GetBooksAsync(string? category, string? subCategory,
+        string? searchString, int page = 1, SortState sortOrder = SortState.NameAsc);
     Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId);
     Task AddToCartAsync(CartItem cartItem);
     Task DeleteFromCartAsync(string userId, int bookId);
@@ -36,6 +38,34 @@ public class BookService: IBookService
             BestBooks = bestBooks,
             CheapBooks = cheapBooks
         };
+    }
+
+    public async Task<BookIndexViewModel> GetBooksAsync(string? category, string? subCategory, string? searchString, int page = 1,
+        SortState sortOrder = SortState.NameAsc)
+    {
+        int pageSize = 18;
+        
+        var books = await GetBooksByCategory(category);
+        
+        if(subCategory != null)
+            books = GetBooksBySubCategory(books, subCategory);
+        
+        if(searchString != null)
+            books = FindBook(books, searchString);
+        
+        if(sortOrder != null)
+            books = GetSortedBooks(books, sortOrder);
+        
+        var count = books.Count;
+        var items = books.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        BookIndexViewModel bookIndexVM = new(
+            items,
+            new PageViewModel(count, page, pageSize),
+            new SortViewModel(sortOrder)
+        );
+        
+        return bookIndexVM;
     }
 
     public List<Book> FindBook(List<Book> books, string searchString)

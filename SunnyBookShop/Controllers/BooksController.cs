@@ -19,7 +19,9 @@ public class BooksController: Controller
     public async Task<IActionResult> Index(string? category, string? subCategory,
         string? searchString, int page = 1, SortState sortOrder = SortState.NameAsc)
     {
-        return View();
+        var bookIndexVM = await _bookService.GetBooksAsync(category, subCategory, searchString, page, sortOrder);
+
+        return View(bookIndexVM);
     }
 
     public async Task<IActionResult> Details(int id)
