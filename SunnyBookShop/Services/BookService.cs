@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Models;
 using SunnyBookShop.Persistence;
+using SunnyBookShop.Utils;
 using SunnyBookShop.ViewModels;
 
 namespace SunnyBookShop.Services;
@@ -58,6 +59,38 @@ public class BookService: IBookService
     {
         var books = await _dbContext.Books.Where(r => r.SubCategory == subCategory).ToListAsync();
         return books;
+    }
+
+    public async Task<List<Book>> GetSortedBooksAsync(SortState sortOrder)
+    {
+        var books = _dbContext.Books.AsQueryable();
+
+        if (books.Any())
+        {
+            switch (sortOrder)
+            {
+                case SortState.NameDesc:
+                    books = books.OrderByDescending(b => b.Title);
+                    break;
+                case SortState.AuthorAsc:
+                    books = books.OrderBy(b => b.Author);
+                    break;
+                case SortState.AuthorDesc:
+                    books = books.OrderByDescending(b => b.Author);
+                    break;
+                case SortState.PriceAsc:
+                    books = books.OrderBy(b => b.Price);
+                    break;
+                case SortState.PriceDesc:
+                    books = books.OrderByDescending(b => b.Price);
+                    break;
+                default:
+                    books = books.OrderBy(b => b.Title);
+                    break;
+            }
+        }
+
+        return await books.ToListAsync();
     }
 
     public async Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId)
