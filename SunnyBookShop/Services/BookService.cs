@@ -54,13 +54,26 @@ public class BookService: IBookService
         return books;
     }
 
+    public async Task<List<Book>> GetBooksBySubCategoryAsync(string subCategory)
+    {
+        var books = await _dbContext.Books.Where(r => r.SubCategory == subCategory).ToListAsync();
+        return books;
+    }
+
     public async Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId)
     {
         User? user = null;
         if (!string.IsNullOrEmpty(userId))
-            user = await _dbContext.Users.Include(u => u.Profile).FirstAsync(u => u.Id == int.Parse(userId));
-        Book? book = await _dbContext.Books.Include(b => b.Reviews).ThenInclude(r => r.User)
-            .ThenInclude(u => u.Profile).FirstOrDefaultAsync(b => b.Id == id);
+            user = await _dbContext.Users
+                .Include(u => u.Profile)
+                .FirstAsync(u => u.Id == int.Parse(userId));
+        
+        Book? book = await _dbContext.Books
+            .Include(b => b.Reviews)
+            .ThenInclude(r => r.User)
+            .ThenInclude(u => u.Profile)
+            .FirstOrDefaultAsync(b => b.Id == id);
+        
         var reviewsCount = book?.Reviews.Count;
         var positiveReviews = 0;
         var positiveReviewsPercents = 0;
@@ -73,7 +86,9 @@ public class BookService: IBookService
         if (book is not null)
         {
             var similarBooks = await _dbContext.Books.Where(b => b.Author == book.Author)
-                .OrderByDescending(b => b.CreatedAt).Take(6).ToListAsync();
+                .OrderByDescending(b => b.CreatedAt)
+                .Take(6)
+                .ToListAsync();
             BookDetailsViewModel detailsVM = new()
             {
                 Book = book,
