@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SunnyBookShop.Models;
 using SunnyBookShop.Persistence;
 using SunnyBookShop.Utils;
@@ -9,8 +10,11 @@ namespace SunnyBookShop.Services;
 public interface IBookService
 {
     Task<HomeViewModel> GetHomeBooksAsync();
-    Task<BookIndexViewModel> GetBooksAsync(string? category, string? subCategory,
-        string? searchString, int page = 1, SortState sortOrder = SortState.NameAsc);
+    Task<List<Book>> GetBooksByCategoryAsync(string category);
+    Task<List<Book>> GetBooksBySubCategoryAsync(string subCategory);
+    List<Book> GetSortedBooks(List<Book> books, SortState sortOrder);
+
+    Task<List<Book>> FindBooksAsync(string searchString);
     Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId);
     Task AddToCartAsync(CartItem cartItem);
     Task DeleteFromCartAsync(string userId, int bookId);
@@ -40,44 +44,17 @@ public class BookService: IBookService
         };
     }
 
-    public async Task<BookIndexViewModel> GetBooksAsync(string? category, string? subCategory, string? searchString, int page = 1,
-        SortState sortOrder = SortState.NameAsc)
+    public async Task<List<Book>> FindBooksAsync(string searchString)
     {
-        int pageSize = 18;
-        
-        var books = await GetBooksByCategory(category);
-        
-        if(subCategory != null)
-            books = GetBooksBySubCategory(books, subCategory);
-        
-        if(searchString != null)
-            books = FindBook(books, searchString);
-        
-        if(sortOrder != null)
-            books = GetSortedBooks(books, sortOrder);
-        
-        var count = books.Count;
-        var items = books.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-        BookIndexViewModel bookIndexVM = new(
-            items,
-            new PageViewModel(count, page, pageSize),
-            new SortViewModel(sortOrder)
-        );
-        
-        return bookIndexVM;
-    }
-
-    public List<Book> FindBook(List<Book> books, string searchString)
-    {
-        books = books
-            .Where(r => r.Title
-                .Contains(searchString) || r.Author.Contains(searchString))
-            .ToList();
+        var books = await _dbContext.Books
+            .Where(r => 
+                r.Title.Contains(searchString) 
+                || r.Author.Contains(searchString))
+            .ToListAsync();
         return books;
     }
 
-    public async Task<List<Book>> GetBooksByCategory(string category)
+    public async Task<List<Book>> GetBooksByCategoryAsync(string category)
     {
         var books = await _dbContext.Books
             .Where(c => c.Category == category)
@@ -85,40 +62,44 @@ public class BookService: IBookService
         return books;
     }
 
-    public List<Book> GetBooksBySubCategory(List<Book> books, string subCategory)
+    public async Task<List<Book>> GetBooksBySubCategoryAsync(string subCategory)
     {
-        books = books.Where(r => r.SubCategory == subCategory).ToList();
+        var books = await _dbContext.Books
+            .Where(r => r.SubCategory == subCategory)
+            .ToListAsync();
         return books;
     }
 
     public List<Book> GetSortedBooks(List<Book> books, SortState sortOrder)
     {
+        List<Book> sortedBooks = books;
+        
         if (books.Any())
         {
             switch (sortOrder)
             {
                 case SortState.NameDesc:
-                    books = books.OrderByDescending(b => b.Title).ToList();
+                    sortedBooks = books.OrderByDescending(b => b.Title).ToList();
                     break;
                 case SortState.AuthorAsc:
-                    books = books.OrderBy(b => b.Author).ToList();
+                    sortedBooks = books.OrderBy(b => b.Author).ToList();
                     break;
                 case SortState.AuthorDesc:
-                    books = books.OrderByDescending(b => b.Author).ToList();
+                    sortedBooks = books.OrderByDescending(b => b.Author).ToList();
                     break;
                 case SortState.PriceAsc:
-                    books = books.OrderBy(b => b.Price).ToList();
+                    sortedBooks = books.OrderBy(b => b.Price).ToList();
                     break;
                 case SortState.PriceDesc:
-                    books = books.OrderByDescending(b => b.Price).ToList();
+                    sortedBooks = books.OrderByDescending(b => b.Price).ToList();
                     break;
                 default:
-                    books = books.OrderBy(b => b.Title).ToList();
+                    sortedBooks = books.OrderBy(b => b.Title).ToList();
                     break;
             }
         }
 
-        return books;
+        return sortedBooks.Any() ? sortedBooks : books;
     }
 
     public async Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId)

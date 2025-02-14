@@ -19,7 +19,34 @@ public class BooksController: Controller
     public async Task<IActionResult> Index(string? category, string? subCategory,
         string? searchString, int page = 1, SortState sortOrder = SortState.NameAsc)
     {
-        var bookIndexVM = await _bookService.GetBooksAsync(category, subCategory, searchString, page, sortOrder);
+        int pageSize = 18;
+        List<Book> books = new List<Book>();
+
+        if (!string.IsNullOrEmpty(category))
+            books = await _bookService.GetBooksByCategoryAsync(category);
+        ViewBag.Category = category;
+
+        if (books.Any() && !string.IsNullOrEmpty(subCategory))
+        {
+            subCategory = subCategory.Replace("+", " ");
+            books = await _bookService.GetBooksBySubCategoryAsync(subCategory);
+            ViewBag.SubCategory = subCategory;
+        }
+
+        if (books.Any() && !string.IsNullOrEmpty(searchString))
+            books = await _bookService.FindBooksAsync(searchString);
+        
+        if (books.Any())
+            books = _bookService.GetSortedBooks(books, sortOrder);
+
+        var count = books.Count;
+        var items = books.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        BookIndexViewModel bookIndexVM = new(
+            items,
+            new PageViewModel(count, page, pageSize),
+            new SortViewModel(sortOrder)
+        );
 
         return View(bookIndexVM);
     }
