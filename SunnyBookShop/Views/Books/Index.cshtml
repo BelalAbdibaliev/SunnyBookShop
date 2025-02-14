@@ -1,0 +1,64 @@
+﻿@model SunnyBookShop.ViewModels.BookIndexViewModel
+@{
+    ViewData["Title"] = "Books";
+}
+
+<link rel="stylesheet" href="~/css/books/index.css" asp-append-version="true"/>
+
+<h4 class="header-text-theme">@ViewBag.SubCategory</h4>
+<hr/>
+
+@if (Model is null)
+{
+    <div class="m-auto d-flex flex-column align-items-center">
+        <img src="~/assets//logo.png" alt="logo"/>
+        <h5 class="display-4">Sorry, theres no items</h5>
+    </div>
+}
+else
+{
+    <div class="sort-controller d-flex justify-content-between">
+        <div class="sort-links d-flex gap-2">
+            <p>Sort: </p>
+            <a asp-action="Index" asp-controller="Books"
+               asp-route-category="@ViewBag.Category"
+               asp-route-subcategory="@ViewBag.SubCategory"
+               asp-route-sortOrder="@(Model.SortViewModel.NameSort)">Name</a>
+            <a asp-action="Index" asp-controller="Books"
+               asp-route-category="@ViewBag.Category"
+               asp-route-subcategory="@ViewBag.SubCategory"
+               asp-route-sortOrder="@(Model.SortViewModel.AuthorSort)">Author</a>
+            <a asp-action="Index" asp-controller="Books"
+               asp-route-category="@ViewBag.Category"
+               asp-route-subcategory="@ViewBag.SubCategory"
+               asp-route-sortOrder="@(Model.SortViewModel.PriceSort)">Price</a>
+        </div>
+        <div>
+            <p>@Model.Books.Count() items on page</p>
+        </div>
+    </div>
+    <hr/>
+    <div class="mb-3 mt-3 d-flex align-items-stretch gap-3 flex-wrap">
+        @foreach (var book in Model.Books)
+        {
+            <div>
+                <a class="bookcard-link" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id">
+                    <div class="bookcard">
+                        <object class="bookcard-image" data="~/assets/posters/@book.PosterUrl" type="image/jpeg">
+                            <img src="~/assets/aot.jpg" alt="poster"/>
+                        </object>
+                        <div class="bookcard-body">
+                            <p class="bookcard-title">@book.Title</p>
+                            <p class="bookcard-text">@book.Author</p>
+                            <p class="bookcard-price">@book.Price$</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+    <div class="d-flex justify-content-center">
+        <page-link page-model="Model.PageViewModel" page-action="Index"
+                   page-url-sortorder="@(Model.SortViewModel.Current)"></page-link>
+    </div>
+}
