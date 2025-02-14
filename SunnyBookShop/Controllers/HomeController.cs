@@ -27,7 +27,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var books = await _bookService.GetSortedBooksAsync();
+        var books = await _bookService.GetHomeBooksAsync();
         
         return View(books);
     }

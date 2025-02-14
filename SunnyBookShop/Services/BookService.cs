@@ -7,7 +7,7 @@ namespace SunnyBookShop.Services;
 
 public interface IBookService
 {
-    Task<HomeViewModel> GetSortedBooksAsync();
+    Task<HomeViewModel> GetHomeBooksAsync();
     Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId);
     Task AddToCartAsync(CartItem cartItem);
     Task DeleteFromCartAsync(string userId, int bookId);
@@ -22,7 +22,7 @@ public class BookService: IBookService
         _dbContext = dbContext;
     }
     
-    public async Task<HomeViewModel> GetSortedBooksAsync()
+    public async Task<HomeViewModel> GetHomeBooksAsync()
     {
         var books = _dbContext.Books.Include(r => r.Reviews);
         var newBooks = await books.OrderByDescending(b => b.CreatedAt).Take(6).ToListAsync();
