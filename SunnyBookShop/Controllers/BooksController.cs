@@ -28,7 +28,6 @@ public class BooksController: Controller
 
         if (books.Any() && !string.IsNullOrEmpty(subCategory))
         {
-            subCategory = subCategory.Replace("+", " ");
             books = await _bookService.GetBooksBySubCategoryAsync(subCategory);
             ViewBag.SubCategory = subCategory;
         }

@@ -64,6 +64,7 @@ public class BookService: IBookService
 
     public async Task<List<Book>> GetBooksBySubCategoryAsync(string subCategory)
     {
+        subCategory = subCategory.Replace("+", " ");
         var books = await _dbContext.Books
             .Where(r => r.SubCategory == subCategory)
             .ToListAsync();
