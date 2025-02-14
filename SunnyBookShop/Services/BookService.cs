@@ -8,6 +8,7 @@ namespace SunnyBookShop.Services;
 public interface IBookService
 {
     Task<HomeViewModel> GetBooksAsync();
+    Task<List<Book>> FindBookAsync(string searchString);
     Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId);
     Task AddToCartAsync(CartItem cartItem);
     Task DeleteFromCartAsync(string userId, int bookId);
@@ -35,6 +36,15 @@ public class BookService: IBookService
             BestBooks = bestBooks,
             CheapBooks = cheapBooks
         };
+    }
+
+    public async Task<List<Book>> FindBookAsync(string searchString)
+    {
+        var books = await _dbContext.Books
+            .Where(r => r.Title
+                .Contains(searchString) || r.Author.Contains(searchString))
+            .ToListAsync();
+        return books;
     }
 
     public async Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId)
