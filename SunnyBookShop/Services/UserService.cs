@@ -5,15 +5,17 @@ using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Models;
 using SunnyBookShop.Persistence;
 using SunnyBookShop.Utils;
+using SunnyBookShop.ViewModels;
 
 namespace SunnyBookShop.Services;
 
 public interface IUserService
 {
-    Task<User?> AuthenticateAsync(string email, string password);
+     Task<User?> AuthenticateAsync(string email, string password);
      Task Login(User user, HttpContext httpContext);
      Task<Result<ClaimsPrincipal>> SignUp(User user);
-     Task<IEnumerable<CartItem>> GetCartItems(string userId);
+     Task<IEnumerable<CartItem>> GetCartItemsAsync(string userId);
+     Task<ProfileViewModel> GetUserProfileAsync(int userId);
     
 }
 
@@ -88,12 +90,27 @@ public class UserService: IUserService
         return Result<ClaimsPrincipal>.Success(claimsPrincipal);
     }
 
-    public async Task<IEnumerable<CartItem>> GetCartItems(string userId)
+    public async Task<IEnumerable<CartItem>> GetCartItemsAsync(string userId)
     {
        return await _dbContext.CartItems
            .Include(i => i.User)
            .Include(i => i.Book)
            .Where(i => i.UserId == int.Parse(userId))
            .ToListAsync();
+    }
+
+    public async Task<ProfileViewModel> GetUserProfileAsync(int id)
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        var orders = _dbContext.Orders.Include(o => o.Book)
+            .Where(o => o.UserId == id && o.Status != "Delivered").GroupBy(o => o.OrderGroupId);
+        var groupedOrders = await orders.Select(g => g.ToList()).ToArrayAsync();
+        
+        ProfileViewModel profileVM = new()
+        {
+            User = user,
+            Orders = groupedOrders
+        };
+        return profileVM;
     }
 }

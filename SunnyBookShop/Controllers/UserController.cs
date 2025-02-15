@@ -14,6 +14,17 @@ public class UserController: Controller
     }
     
     [Authorize]
+    public async Task<IActionResult> Profile(int id)
+    {
+        var profileVM = await _userService.GetUserProfileAsync(id);
+        
+        if(profileVM == null)
+            return NotFound();
+        
+        return View(profileVM);
+    }
+    
+    [Authorize]
     public async Task<IActionResult> Cart()
     {
         string? userId = User.FindFirst("UserId")?.Value;
@@ -21,7 +32,7 @@ public class UserController: Controller
         {
             return NotFound();
         }
-        var cartItems = await _userService.GetCartItems(userId);
+        var cartItems = await _userService.GetCartItemsAsync(userId);
         return View(cartItems);
     }
 }

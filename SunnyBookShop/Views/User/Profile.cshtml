@@ -1,0 +1,114 @@
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SunnyBookShop.Utils
+@model SunnyBookShop.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = Model.User.Profile?.Name;
+    _ = Enum.TryParse(typeof(LocationList), Model.User.Profile?.Location, true, out var location);
+    string? idClaim = User.FindFirst("UserId")?.Value;
+    string? userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+    int userId = 0;
+    if (idClaim is not null)
+    {
+        userId = int.Parse(idClaim);
+    }
+}
+
+<link rel="stylesheet" href="~/css/user/profile.css" asp-append-version="true"/>
+
+<div>
+    <div class="col-8 m-auto row">
+        <div class="col-4">
+            <div class="profile-avatar-div  d-flex flex-column gap-3 align-content-center">
+                <object class="profile-avatar-img" data="~/assets/avatars/@Model.User.Profile?.AvatarUrl"
+                        type="image/jpeg">
+                    <img class="profile-avatar-img" src="~/assets/avatar.jpg" alt="gandon"/>
+                </object>
+                @if (userId == Model.User.Id)
+                {
+                    <a asp-controller="User" asp-action="Edit" asp-route-id="@Model.User.Id" class="btn btn-primary">Edit
+                        Profile</a>
+                    <a asp-controller="User" asp-action="PurchaseHistory" class="btn btn-primary">Purchase History</a>
+                    if (userRole == "Admin")
+                    {
+                        <a asp-controller="Admin" asp-action="AddBook" class="btn btn-danger">Add Product</a>
+                        <a asp-controller="Admin" asp-action="Orders" class="btn btn-danger">Orders Control</a>
+                    }
+                }
+                @if (userRole == "Admin")
+                {
+                    <form asp-action="DeleteUser" asp-controller="Admin" method="post"
+                          class="d-flex flex-column gap-3 align-content-center">
+                        <input name="id" type="hidden" value="@Model.User.Id"/>
+                        <button type="submit" class="btn btn-danger">Delete User</button>
+                    </form>
+                }
+            </div>
+        </div>
+        <div class="profile-info-div col-8 d-flex flex-column align-items-stretch">
+            <div class="profile-user-description">
+                @if (Model.User.Role == "Admin")
+                {
+                    <h4 class="profile-user-admin-name">@(Model.User.Profile?.Name ?? "")</h4>
+                    <p class="profile-user-admin-status">@Model.User.Role</p>
+                }
+                else
+                {
+                    <h4 class="profile-user-name">@(Model.User.Profile?.Name ?? "")</h4>
+                    <p class="profile-user-status">@Model.User.Role</p>
+                }
+            </div>
+            <div class="row">
+                <div class="profile-info-labels col-5">
+                    <p class="profile-user-mail">E-mail:</p>
+                    <p class="profile-user-phone">Phone:</p>
+                    <p class="profile-user-location">Location:</p>
+                </div>
+                <div class="profile-info-details col-7">
+                    <p class="profile-user-mail">@(Model.User.Email ?? "")</p>
+                    <p class="profile-user-phone">@(Model.User.Profile?.PhoneNumber ?? "")</p>
+                    <p class="profile-user-location">@(Model.User.Profile?.LocationString ?? "")</p>
+                </div>
+            </div>
+
+
+            <h5 class="header-text-theme">Orders</h5>
+            <hr/>
+            <div class="d-flex flex-column gap-3">
+                @if (!Model.Orders.Any())
+                {
+                    <div class="orders-container">
+                        <p class="header-text-theme-mini">No items</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var orderGroup in Model.Orders)
+                    {
+                        <div class="orders-container">
+                            <p>Group ID: @orderGroup.First().OrderGroupId</p>
+                            <p>Offer date: @orderGroup.First().CreatedAt.ToString()</p>
+                            <div class="orders-list">
+                                @foreach (var order in orderGroup)
+                                {
+                                    <div class="order-item">
+                                        <div>
+                                            <p>@order.Book.Title</p>
+                                            <p>@order.Book.Author</p>
+                                        </div>
+                                        <div>
+                                            <p>@order.Book.Price$</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <p>Total: @orderGroup.First().Total$</p>
+                            <p>Status: <b>@orderGroup.First().Status</b></p>
+                            <p>Last modified: @orderGroup.First().UpdatedAt.ToString()</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
