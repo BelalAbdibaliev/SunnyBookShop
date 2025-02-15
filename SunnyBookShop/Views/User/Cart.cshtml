@@ -1,0 +1,64 @@
+﻿@model IEnumerable<CartItem>
+@{
+    ViewData["Title"] = "Cart";
+    var totalPrice = Model.Sum(b => b.Book.Price);
+    bool isOutOfStock = Model.Any(i => i.Book.Count <= 0);
+}
+
+<link rel="stylesheet" href="~/css/user/cart.css" asp-append-version="true"/>
+
+<p class="header-text-theme">Cart</p>
+
+<div class="cart-container">
+    @foreach (var item in Model)
+    {
+        <div class="cart-item">
+            <div class="cart-item-image">
+                <object class="book-image-img cart-item-image" data="~/assets/posters/@item.Book.PosterUrl"
+                        type="image/jpeg">
+                    <img class="book-image-img" src="~/assets/aot.jpg" alt="poster"/>
+                </object>
+            </div>
+            <div class="cart-item-primary-info">
+                <p class="cart-item-name">@item.Book.Title</p>
+                <p class="cart-item-author">@item.Book.Author</p>
+            </div>
+            <div class="cart-item-secondary-info">
+                <p class="cart-item-name">@item.Book.Price$</p>
+                <p>In stock: @item.Book.Count</p>
+                <form asp-action="DeleteFromCart" asp-controller="Books" asp-route-id="@item.Id" method="post">
+                    <button type="submit">Remove</button>
+                </form>
+
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <div class="cart-total">
+        <div class="cart-total-info">
+            <p>Estimated Total</p>
+            <p>@totalPrice$</p>
+        </div>
+
+    </div>
+    <div class="cart-control-buttons">
+        @if (isOutOfStock)
+        {
+            <a disabled class="btn btn-success disabled">Purchase</a>
+        }
+        else
+        {
+            <a asp-action="Checkout" asp-controller="User" class="btn btn-success">Purchase</a>
+        }
+    </div>
+}
+else
+{
+    <div class="m-auto mt-5 mb-5 d-flex flex-column align-items-center">
+        <img src="~/assets//logo.png" alt="logo"/>
+        <h5 class="display-4">Cart is empty</h5>
+    </div>
+}

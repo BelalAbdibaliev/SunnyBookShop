@@ -13,6 +13,7 @@ public interface IUserService
     Task<User?> AuthenticateAsync(string email, string password);
      Task Login(User user, HttpContext httpContext);
      Task<Result<ClaimsPrincipal>> SignUp(User user);
+     Task<IEnumerable<CartItem>> GetCartItems(string userId);
     
 }
 
@@ -85,5 +86,14 @@ public class UserService: IUserService
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
         return Result<ClaimsPrincipal>.Success(claimsPrincipal);
+    }
+
+    public async Task<IEnumerable<CartItem>> GetCartItems(string userId)
+    {
+       return await _dbContext.CartItems
+           .Include(i => i.User)
+           .Include(i => i.Book)
+           .Where(i => i.UserId == int.Parse(userId))
+           .ToListAsync();
     }
 }
