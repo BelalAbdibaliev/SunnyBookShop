@@ -16,7 +16,8 @@ public interface IUserService
      Task<Result<ClaimsPrincipal>> SignUp(User user);
      Task<IEnumerable<CartItem>> GetCartItemsAsync(string userId);
      Task<ProfileViewModel> GetUserProfileAsync(int userId);
-    
+     Task<CheckoutViewModel> GetCheckoutViewModelAsync(int? userId);
+     Task<List<Order>> CheckOut(int userId, decimal totalPrice);
 }
 
 public class UserService: IUserService
@@ -112,5 +113,62 @@ public class UserService: IUserService
             Orders = groupedOrders
         };
         return profileVM;
+    }
+
+    public async Task<CheckoutViewModel> GetCheckoutViewModelAsync(int? userId)
+    {
+        var cartItems = await _dbContext.CartItems
+            .Include(i => i.User)
+            .Include(i => i.Book)
+            .Where(i => i.UserId == userId)
+            .ToListAsync();
+
+        var user = await _dbContext.Users
+            .Include(u => u.Profile)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        
+        CheckoutViewModel checkoutVM = new()
+        {
+            CartItems = cartItems,
+            User = user
+        };
+        
+        return checkoutVM;
+    }
+
+    public async Task<List<Order>> CheckOut(int userId, decimal totalPrice)
+    {
+        List<Order> orders = new();
+
+        var cartItems = await _dbContext.CartItems
+            .Include(i => i.User)
+            .Include(i => i.Book)
+            .Where(i => i.UserId == userId)
+            .ToListAsync();
+        string orderGroupId = Guid.NewGuid().ToString();
+        foreach (CartItem item in cartItems)
+        {
+            var order = new Order
+            {
+                Book = item.Book,
+                BookId = item.BookId,
+                User = item.User,
+                UserId = item.UserId,
+                Total = totalPrice,
+                OrderGroupId = orderGroupId,
+                Status = "Waiting for dispatch"
+            };
+            item.Book.Count -= 1;
+            if (item.Book.Count < 0)
+                item.Book.Count = 0;
+            orders.Add(order);
+            _dbContext.Books.Update(item.Book);
+        }
+
+        await _dbContext.Orders.AddRangeAsync(orders);
+        _dbContext.CartItems.RemoveRange(cartItems);
+        await _dbContext.SaveChangesAsync();
+
+        return orders;
     }
 }

@@ -35,4 +35,32 @@ public class UserController: Controller
         var cartItems = await _userService.GetCartItemsAsync(userId);
         return View(cartItems);
     }
+    
+    [Authorize]
+    public async Task<IActionResult> Checkout()
+    {
+        int? userId = int.Parse(User.FindFirst("UserId")?.Value);
+            
+        var checkoutVM = await _userService.GetCheckoutViewModelAsync(userId);
+
+        if(checkoutVM == null)
+            return NotFound();
+            
+        return View(checkoutVM);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Checkout(decimal totalPrice)
+    {
+        string? userId = User.FindFirst("UserId")?.Value;
+        if (string.IsNullOrEmpty(userId))
+            return BadRequest();
+
+        var result =  await _userService.CheckOut(Int32.Parse(userId), totalPrice);
+        if(result is null)
+            return BadRequest();
+        
+        return RedirectToAction("Profile", "User", new { Id = int.Parse(userId) });
+    }
 }

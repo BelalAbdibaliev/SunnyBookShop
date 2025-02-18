@@ -1,0 +1,58 @@
+﻿@model SunnyBookShop.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+    var totalPrice = Model.CartItems.Sum(b => b.Book.Price);
+}
+
+<link rel="stylesheet" href="/css/user/cart.css" asp-append-version="true"/>
+
+<div class="col-8 m-auto mb-2">
+    <div class="d-flex flex-column gap-2 mb-3">
+        <p class="header-text-theme">Checkout</p>
+        <label>Email</label>
+        <input asp-for="@Model.User.Email" class="form-control" />
+        <label>Receiver (Full name)</label>
+        <input asp-for="@Model.User.Profile!.Name" class=" form-control" />
+        <label>Location</label>
+        <input class="form-control" value="@Model.User.Profile!.LocationString" />
+        <label>Phone number</label>
+        <input asp-for="@Model.User.Profile!.PhoneNumber" class="form-control" />
+    </div>
+
+
+    <div class="checkout-container">
+        @foreach (var item in Model.CartItems)
+        {
+            <div class="checkout-item ">
+                <div class="cart-item-image">
+                    <object class="book-image-img cart-item-image" data="~/assets/posters/@item.Book.PosterUrl"
+                            type="image/jpeg">
+                        <img class="book-image-img" src="~/assets/aot.jpg" alt="poster"/>
+                    </object>
+                </div>
+                <div class="cart-item-primary-info">
+                    <p class="cart-item-name">@item.Book.Title</p>
+                    <p class="cart-item-author">@item.Book.Author</p>
+                </div>
+                <div class="cart-item-secondary-info">
+                    <p class="cart-item-name">@item.Book.Price$</p>
+                    <p>In stock: @item.Book.Count</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="checkout-total">
+        <div class="checkout-total-info">
+            <p>Estimated Total</p>
+            <p>@totalPrice$</p>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4 mb-4">
+        <form asp-action="Checkout" asp-controller="User" asp-route-total-price="@totalPrice" method="post">
+            <input name="totalPrice" type="hidden" value="@totalPrice"/>
+            <button type="submit" class="btn btn-success">Confirm</button>
+        </form>
+    </div>
+</div>
