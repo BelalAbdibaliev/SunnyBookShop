@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SunnyBookShop.Utils
+@model Book
+@{
+    ViewData["Title"] = "Add Book";
+}
+<form asp-action="AddBook" asp-controller="Admin" method="post" enctype="multipart/form-data">
+    <div class="col-6 d-flex flex-column m-auto">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control mb-2" type="text"/>
+        <label asp-for="Author"></label>
+        <input asp-for="Author" class="form-control mb-2" type="text"/>
+        <label asp-for="Publisher"></label>
+        <input asp-for="Publisher" class="form-control mb-2" type="text"/>
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control mb-2" step="any" type="number"/>
+        <label asp-for="Count"></label>
+        <input asp-for="Count" class="form-control mb-2" type="number"/>
+        <label asp-for="Category"></label>
+        <select asp-for="Category" class="form-select mb-1" id="categorySelect"
+                asp-items="Html.GetEnumSelectList<CategoryList>()"></select>
+        <select asp-for="SubCategory" class="form-select mb-2" id="subCategorySelect"></select>
+        <label asp-for="PosterUrl"></label>
+        <input asp-for="PosterFile" accept="image/*" class="form-control mb-2"/>
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control mb-2" rows="5"></textarea>
+        <div class="my-validation-summary" asp-validation-summary="All"></div>
+        <button class="btn btn-danger" type="submit">Add Book</button>
+    </div>
+</form>
+
+<script src="~/js/subcategories.js" asp-append-version="true"></script>
