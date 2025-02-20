@@ -7,16 +7,20 @@ namespace SunnyBookShop.Models;
 public class Book
 {
     public int Id { get; set; }
-    [Required] public string Title { get; set; } = null!;
-    [Required] public string Author { get; set; } = null!;
+    [Required
+    ] public string Title { get; set; } = null!;
+    [Required]
+    public string Author { get; set; } = null!;
     public string? Publisher { get; set; }
     public string? Description { get; set; }
     public string? PosterUrl { get; set; }
 
-    [NotMapped] public IFormFile? PosterFile { get; set; }
+    [NotMapped]
+    public IFormFile? PosterFile { get; set; }
     public string? Category { get; set; }
 
-    [Display(Name = "Subcategory")] public string? SubCategory { get; set; }
+    [Display(Name = "Subcategory")]
+    public string? SubCategory { get; set; }
 
     [NotMapped]
     public string? CategoryString
