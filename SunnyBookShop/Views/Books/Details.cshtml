@@ -14,9 +14,18 @@
 
 <div class="book-showcase">
 	<div class="book-image">
-		<object class="book-image-img" data="~/assets/posters/@Model.Book.PosterUrl" type="image/jpeg">
-			<img class="book-image-img" src="~/assets/aot.jpg" alt="poster"/>
-		</object>
+		@if (Model.Book.PosterUrl is not null)
+		{
+			<object class="book-image-img" data="@Model.Book.PosterUrl" type="image/jpeg">
+				<img class="book-image-img" src="@Model.Book.PosterUrl" alt="poster"/>
+			</object>
+		}
+		else
+		{
+			<object class="book-image-img" data="~/assets/posters/@Model.Book.PosterUrl" type="image/jpeg">
+				<img class="book-image-img" src="~/assets/aot.jpg" alt="poster"/>
+			</object>
+		}
 	</div>
 	<div class="book-info">
 		<p class="book-info-title">@Model.Book.Title</p>

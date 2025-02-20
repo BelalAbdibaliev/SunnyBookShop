@@ -44,9 +44,18 @@ else
             <div>
                 <a class="bookcard-link" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id">
                     <div class="bookcard">
-                        <object class="bookcard-image" data="~/assets/posters/@book.PosterUrl" type="image/jpeg">
-                            <img src="~/assets/aot.jpg" alt="poster"/>
-                        </object>
+                        @if (book.PosterUrl is not null)
+                        {
+                            <object class="bookcard-image" data="@book.PosterUrl" type="image/jpeg">
+                                <img src="@book.PosterUrl" alt="poster"/>
+                            </object>
+                        }
+                        else
+                        {
+                            <object class="bookcard-image" data="~/assets/posters/@book.PosterUrl" type="image/jpeg">
+                                <img src="~/assets/aot.jpg" alt="poster"/>
+                            </object>
+                        }
                         <div class="bookcard-body">
                             <p class="bookcard-title">@book.Title</p>
                             <p class="bookcard-text">@book.Author</p>

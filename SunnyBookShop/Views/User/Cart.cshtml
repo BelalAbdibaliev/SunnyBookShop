@@ -14,10 +14,20 @@
     {
         <div class="cart-item">
             <div class="cart-item-image">
-                <object class="book-image-img cart-item-image" data="~/assets/posters/@item.Book.PosterUrl"
-                        type="image/jpeg">
-                    <img class="book-image-img" src="~/assets/aot.jpg" alt="poster"/>
-                </object>
+                @if (item.Book.PosterUrl is not null)
+                {
+                    <object class="book-image-img cart-item-image" data="@item.Book.PosterUrl"
+                            type="image/jpeg">
+                        <img class="book-image-img" src="@item.Book.PosterUrl" alt="poster"/>
+                    </object>
+                }
+                else
+                {
+                    <object class="book-image-img cart-item-image" data="~/assets/posters/@item.Book.PosterUrl"
+                            type="image/jpeg">
+                        <img class="book-image-img" src="~/assets/aot.jpg" alt="poster"/>
+                    </object>
+                }
             </div>
             <div class="cart-item-primary-info">
                 <p class="cart-item-name">@item.Book.Title</p>
