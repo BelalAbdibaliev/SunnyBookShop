@@ -37,11 +37,16 @@ public class CloudinaryService: IPhotoService
         return uploadResult;
     }
 
-    public async Task<DeletionResult> DeletePhotoAsync(string id)
+    public async Task<DeletionResult> DeletePhotoAsync(string url)
     {
-        var deleteParams = new DeletionParams(id);
+        var uri = new Uri(url);
+        var path = uri.AbsolutePath.TrimStart('/');
+
+        var publicId = Path.Combine(Path.GetDirectoryName(path) ?? "", Path.GetFileNameWithoutExtension(path))
+            .Replace("\\", "/");
+
+        var deleteParams = new DeletionParams(publicId) { Invalidate = true };
         var result = await _cloudinary.DestroyAsync(deleteParams);
-        
         return result;
     }
 }
