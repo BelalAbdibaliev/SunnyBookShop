@@ -8,10 +8,12 @@ namespace SunnyBookShop.Controllers;
 public class AdminController: Controller
 {
     private readonly IAdminService _adminService;
+    private readonly IBookService _bookService;
 
-    public AdminController(IAdminService adminService)
+    public AdminController(IAdminService adminService, IBookService bookService)
     {
         _adminService = adminService;
+        _bookService = bookService;
     }
 
     [Authorize(Roles = "Admin")]
@@ -33,5 +35,34 @@ public class AdminController: Controller
             return BadRequest();
         
         return RedirectToAction("Index", "Home");
+    }
+
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> EditBook(int id)
+    {
+        var book = await _bookService.GetBookByIdAsync(id);
+        if (book is null)
+            return NotFound();
+        
+        return View(book);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    public async Task<IActionResult> EditBook(int id, [Bind("Id", "Title", "Author", "Publisher",
+            "Price", "Count", "Category", "SubCategory", "PosterUrl", "PosterFile", "Description")]
+        Book book)
+    {
+        if (id != book.Id)
+            return NotFound();
+        if (!ModelState.IsValid)
+            return View(book);
+        
+        var result = await _adminService.EditBookAsync(id, book);
+        if(result is null)
+            return BadRequest();
+        
+        return RedirectToAction("Details", "Books", new { id = book.Id });
     }
 }
