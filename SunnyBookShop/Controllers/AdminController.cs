@@ -65,4 +65,19 @@ public class AdminController: Controller
         
         return RedirectToAction("Details", "Books", new { id = book.Id });
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteBook(int id)
+    {
+        var isDeleted = await _adminService.DeleteBookAsync(id);
+        if(!isDeleted)
+        {
+            TempData["ErrorMessage"] = "Something is wrong!";
+            return BadRequest();
+        }
+        
+        return RedirectToAction("Index", "Home");
+    }
 }

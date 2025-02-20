@@ -1,4 +1,5 @@
 ﻿using CloudinaryDotNet.Actions;
+using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Interfaces;
 using SunnyBookShop.Models;
 using SunnyBookShop.Persistence;
@@ -9,6 +10,7 @@ public interface IAdminService
 {
     Task<Book> AddBookAsync(Book book);
     Task<Book?> EditBookAsync(int id, Book book);
+    Task<bool> DeleteBookAsync(int id);
 }
 
 
@@ -56,5 +58,21 @@ public class AdminService: IAdminService
         await _dbContext.SaveChangesAsync();
         
         return book;
+    }
+
+    public async Task<bool> DeleteBookAsync(int id)
+    {
+        var book = await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == id);
+        if(book is null)
+            return false;
+        if (book.PosterUrl is not null)
+        {
+            await _photoService.DeletePhotoAsync(book.PosterUrl);
+        }
+        
+        _dbContext.Books.Remove(book);
+        await _dbContext.SaveChangesAsync();
+
+        return true;
     }
 }
