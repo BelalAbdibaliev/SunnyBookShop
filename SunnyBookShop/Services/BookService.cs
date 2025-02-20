@@ -10,6 +10,7 @@ namespace SunnyBookShop.Services;
 public interface IBookService
 {
     Task<HomeViewModel> GetHomeBooksAsync();
+    Task<Book?> GetBookByIdAsync(int id);
     Task<List<Book>> GetBooksByCategoryAsync(string category);
     Task<List<Book>> GetBooksBySubCategoryAsync(string subCategory);
     List<Book> GetSortedBooks(List<Book> books, SortState sortOrder);
@@ -42,6 +43,11 @@ public class BookService: IBookService
             BestBooks = bestBooks,
             CheapBooks = cheapBooks
         };
+    }
+
+    public async Task<Book?> GetBookByIdAsync(int id)
+    {
+        return await _dbContext.Books.FirstOrDefaultAsync(b => b.Id == id);
     }
 
     public async Task<List<Book>> FindBooksAsync(string searchString)
