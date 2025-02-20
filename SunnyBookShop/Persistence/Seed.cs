@@ -291,4 +291,37 @@ public static class Seed
         );
         context.SaveChanges();
     }
+
+    public static void SeedUsers(IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        
+        if(context.Users is not null)
+            return;
+        
+        context.Users.AddRange(
+            new User
+            {
+                Email = "user@mail.ru",
+                Password = "malenok",
+                Role = "User",
+                Profile = new UserProfile
+                {
+                    Name = "User User",
+                    Location = "Kyrgyzstan, Bishkek",
+                    PhoneNumber = "1234567890"
+                }
+            },
+            new User
+            {
+                Email = "admin@gmail.ru",
+                Password = "myadmin",
+                Role = "Admin",
+                Profile = new UserProfile()
+            }
+        );
+
+        context.SaveChanges();
+    }
 }
