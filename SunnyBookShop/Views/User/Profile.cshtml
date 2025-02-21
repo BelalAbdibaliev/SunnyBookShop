@@ -20,10 +20,20 @@
     <div class="col-8 m-auto row">
         <div class="col-4">
             <div class="profile-avatar-div  d-flex flex-column gap-3 align-content-center">
-                <object class="profile-avatar-img" data="~/assets/avatars/@Model.User.Profile?.AvatarUrl"
-                        type="image/jpeg">
-                    <img class="profile-avatar-img" src="~/assets/avatar.jpg" alt="user"/>
-                </object>
+                @if (@Model.User.Profile?.AvatarUrl is not null)
+                {
+                    <object class="profile-avatar-img" data="@Model.User.Profile?.AvatarUrl"
+                            type="image/jpeg">
+                        <img class="profile-avatar-img" src="@Model.User.Profile?.AvatarUrl" alt="userWWW"/>
+                    </object>
+                }
+                else
+                {
+                    <object class="profile-avatar-img" data="~/assets/avatars/@Model.User.Profile?.AvatarUrl"
+                            type="image/jpeg">
+                        <img class="profile-avatar-img" src="~/assets/avatar.jpg" alt="user"/>
+                    </object>
+                }
                 @if (userId == Model.User.Id)
                 {
                     <a asp-controller="User" asp-action="Edit" asp-route-id="@Model.User.Id" class="btn btn-primary">Edit

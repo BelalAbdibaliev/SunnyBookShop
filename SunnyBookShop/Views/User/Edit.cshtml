@@ -14,9 +14,18 @@
     <div class="col-6 m-auto row">
         <div class="col-6">
             <div class="d-flex flex-column gap-3 align-items-center">
-                <object class="profile-avatar-img" data="~/assets/avatars/@Model.AvatarUrl" type="image/jpeg">
-                    <img class="profile-avatar-img" src="~/assets/avatar.jpg" alt="gg"/>
-                </object>
+                @if (Model.AvatarUrl is not null)
+                {
+                    <object class="profile-avatar-img" data="@Model.AvatarUrl" type="image/jpeg">
+                        <img class="profile-avatar-img" src="@Model.AvatarUrl" alt="gg"/>
+                    </object>
+                }
+                else
+                {
+                    <object class="profile-avatar-img" data="~/assets/avatars/@Model.AvatarUrl" type="image/jpeg">
+                        <img class="profile-avatar-img" src="~/assets/avatar.jpg" alt="gg"/>
+                    </object>
+                }
                 <input class="form-control" asp-for="@Model.AvatarFile" accept="image/*"/>
             </div>
         </div>
