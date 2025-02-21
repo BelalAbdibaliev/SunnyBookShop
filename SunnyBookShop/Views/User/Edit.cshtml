@@ -1,0 +1,41 @@
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SunnyBookShop.Utils
+@model UserProfile
+@{
+    ViewData["Title"] = "Edit Profile";
+    string? userId = User.FindFirst("UserId")?.Value;
+    string? userMail = User.FindFirst(ClaimTypes.Email)?.Value;
+}
+
+<link rel="stylesheet" href="~/css/user/profile.css" asp-append-version="true"/>
+
+<form asp-controller="User" asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div class="col-6 m-auto row">
+        <div class="col-6">
+            <div class="d-flex flex-column gap-3 align-items-center">
+                <object class="profile-avatar-img" data="~/assets/avatars/@Model.AvatarUrl" type="image/jpeg">
+                    <img class="profile-avatar-img" src="~/assets/avatar.jpg" alt="gg"/>
+                </object>
+                <input class="form-control" asp-for="@Model.AvatarFile" accept="image/*"/>
+            </div>
+        </div>
+        <div class="col-6">
+            <h3>@userMail</h3>
+            <div class="d-flex flex-column gap-1">
+                <input asp-for="@Model.UserId" type="number" value="@Model.UserId" hidden/>
+                <label asp-for="@Model.Name"></label>
+                <input asp-for="@Model.Name" class="form-control" type="text" value="@Model.Name"/>
+                <label asp-for="@Model.Location"></label>
+
+                <select asp-for="@Model.Location" class="form-select"
+                        asp-items="Html.GetEnumSelectList<LocationList>()"></select>
+                <label>Phone number (10 numbers)</label>
+                <input id="phone" asp-for="@Model.PhoneNumber" class="form-control" value="@Model.PhoneNumber"/>
+                <div class="my-validation-summary" asp-validation-summary="All"></div>
+                <button id="submit-button" type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</form>
+	
