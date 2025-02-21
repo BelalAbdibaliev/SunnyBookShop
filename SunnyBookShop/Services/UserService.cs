@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using SunnyBookShop.Interfaces;
 using SunnyBookShop.Models;
 using SunnyBookShop.Persistence;
 using SunnyBookShop.Utils;
@@ -15,19 +16,23 @@ public interface IUserService
      Task Login(User user, HttpContext httpContext);
      Task<Result<ClaimsPrincipal>> SignUp(User user);
      Task<IEnumerable<CartItem>> GetCartItemsAsync(string userId);
-     Task<ProfileViewModel> GetUserProfileAsync(int userId);
+     Task<ProfileViewModel> GetUserAsync(int userId);
+     Task<UserProfile?> GetUserProfileAsync(int userId);
      Task<CheckoutViewModel> GetCheckoutViewModelAsync(int? userId);
      Task<List<Order>> CheckOut(int userId, decimal totalPrice);
+     Task<bool> EditUserProfileAsync(int userId ,UserProfile userProfile);
 }
 
 public class UserService: IUserService
 {
     const string authScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     private readonly ApplicationDbContext _dbContext;
+    private readonly IPhotoService _photoService;
     
-    public UserService(ApplicationDbContext dbContext)
+    public UserService(ApplicationDbContext dbContext, IPhotoService photoService)
     {
         _dbContext = dbContext;
+        _photoService = photoService;
     }
     
     public async Task<User?> AuthenticateAsync(string email, string password)
@@ -100,12 +105,17 @@ public class UserService: IUserService
            .ToListAsync();
     }
 
-    public async Task<ProfileViewModel> GetUserProfileAsync(int id)
+    public async Task<ProfileViewModel> GetUserAsync(int id)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
-        var orders = _dbContext.Orders.Include(o => o.Book)
+        var user = await _dbContext.Users
+            .Include(u => u.Profile)
+            .FirstOrDefaultAsync(u => u.Id == id);
+        var orders = _dbContext.Orders
+            .Include(o => o.Book)
             .Where(o => o.UserId == id && o.Status != "Delivered").GroupBy(o => o.OrderGroupId);
-        var groupedOrders = await orders.Select(g => g.ToList()).ToArrayAsync();
+        var groupedOrders = await orders
+            .Select(g => g.ToList())
+            .ToArrayAsync();
         
         ProfileViewModel profileVM = new()
         {
@@ -113,6 +123,14 @@ public class UserService: IUserService
             Orders = groupedOrders
         };
         return profileVM;
+    }
+
+    public async Task<UserProfile?> GetUserProfileAsync(int userId)
+    {
+        UserProfile? userProfile = await _dbContext.UserProfiles
+            .Include(u => u.User)
+            .FirstOrDefaultAsync(u => u.UserId == userId);
+        return userProfile;
     }
 
     public async Task<CheckoutViewModel> GetCheckoutViewModelAsync(int? userId)
@@ -170,5 +188,30 @@ public class UserService: IUserService
         await _dbContext.SaveChangesAsync();
 
         return orders;
+    }
+
+    public async Task<bool> EditUserProfileAsync(int userId ,UserProfile profile)
+    {
+        var user = await _dbContext.Users
+            .Include(u => u.Profile)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        user.Profile.Name = profile.Name;
+        user.Profile.Location = profile.Location;
+        user.Profile.PhoneNumber = profile.PhoneNumber;
+        
+        if (profile.AvatarFile is not null)
+        {
+            if(profile.AvatarUrl is not null)
+                await _photoService.DeletePhotoAsync(user.Profile.AvatarUrl);
+            
+            var creationResult = await _photoService.UploadPhotoAsync(profile.AvatarFile);
+            user.Profile.AvatarUrl = creationResult.Url.ToString();
+        }
+        
+        _dbContext.Users.Update(user);
+        if(await _dbContext.SaveChangesAsync() > 0)
+            return true;
+        
+        return false;
     }
 }

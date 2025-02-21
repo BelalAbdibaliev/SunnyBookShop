@@ -30,5 +30,6 @@ public class UserProfile
 
     public int UserId { get; set; }
 
-    [ValidateNever] public User User { get; set; } = null!;
+    [ValidateNever]
+    public User User { get; set; } = null!;
 }
