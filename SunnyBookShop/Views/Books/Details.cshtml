@@ -105,10 +105,20 @@
 		{
 			<div class="book-review">
 				<div class="book-review-avatar-div">
-					<object class="book-review-avatar" data="~/assets/avatars/@review.User?.Profile?.AvatarUrl"
-					        type="image/jpeg">
-						<img src="~/assets/aot.jpg" alt="poster"/>
-					</object>
+					@if (Model.User.Profile.AvatarUrl is not null)
+					{
+						<object class="book-review-avatar" data="@review.User?.Profile?.AvatarUrl"
+						        type="image/jpeg">
+							<img src="@review.User?.Profile?.AvatarUrl" alt="poster"/>
+						</object>
+					}
+					else
+					{
+						<object class="book-review-avatar" data="~/assets/avatars/@review.User?.Profile?.AvatarUrl"
+						        type="image/jpeg">
+							<img src="~/assets/aot.jpg" alt="poster"/>
+						</object>
+					}
 				</div>
 				<div class="d-flex justify-content-between">
 					<div class="book-review-user">
