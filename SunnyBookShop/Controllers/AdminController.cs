@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SunnyBookShop.Models;
 using SunnyBookShop.Services;
+using SunnyBookShop.ViewModels;
 
 namespace SunnyBookShop.Controllers;
 
@@ -79,5 +80,12 @@ public class AdminController: Controller
         }
         
         return RedirectToAction("Index", "Home");
+    }
+    
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Orders()
+    {
+        var ordersVM = await _adminService.GetOrdersAsync();
+        return View(ordersVM);
     }
 }
