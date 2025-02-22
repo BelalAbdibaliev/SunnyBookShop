@@ -1,0 +1,42 @@
+﻿@model List<List<Order>>
+@{
+    ViewData["Title"] = "Purchase History";
+}
+
+<link rel="stylesheet" href="~/css/user/profile.css" asp-append-version="true"/>
+<p class="header-text-theme">Purchase History</p>
+<div class="d-flex flex-column gap-3">
+    @if (!Model.Any())
+    {
+        <div class="orders-container">
+            <p class="header-text-theme-mini">No items</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var orderGroup in Model)
+        {
+            <div class="orders-container">
+                <p>Group ID: @orderGroup.First().OrderGroupId</p>
+                <p>Offer date: @orderGroup.First().CreatedAt.ToString()</p>
+                <div class="orders-list">
+                    @foreach (var order in orderGroup)
+                    {
+                        <div class="order-item">
+                            <div>
+                                <p>@order.Book.Title</p>
+                                <p>@order.Book.Author</p>
+                            </div>
+                            <div>
+                                <p>@order.Book.Price$</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <p>Total: @orderGroup.First().Total$</p>
+                <p>Status: <b>@orderGroup.First().Status</b></p>
+                <p>Last modified: @orderGroup.First().UpdatedAt.ToString()</p>
+            </div>
+        }
+    }
+</div>
