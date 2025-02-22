@@ -106,7 +106,7 @@ public class AdminController: Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var result = await _adminService.DeleteUserAsync(id);
+        var result = await _adminService.DeleteUserAsync(id, HttpContext);
         if(!result)
             return StatusCode(500);
         

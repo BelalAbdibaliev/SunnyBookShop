@@ -1,4 +1,6 @@
 ﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Interfaces;
 using SunnyBookShop.Models;
@@ -14,7 +16,7 @@ public interface IAdminService
     Task<bool> DeleteBookAsync(int id);
     Task<OrdersViewModel> GetOrdersAsync();
     Task<bool> UpdateOrdersAsync(string groupId, string newStatus);
-    Task<bool> DeleteUserAsync(int id);
+    Task<bool> DeleteUserAsync(int id, HttpContext httpContext);
 }
 
 public class AdminService : IAdminService
@@ -107,12 +109,13 @@ public class AdminService : IAdminService
         return await _dbContext.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> DeleteUserAsync(int id)
+    public async Task<bool> DeleteUserAsync(int id, HttpContext httpContext)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         if(user is null)
             return false;
         _dbContext.Users.Remove(user);
+        await httpContext.SignOutAsync();
         return await _dbContext.SaveChangesAsync() > 0;
     }
 }
