@@ -13,6 +13,7 @@ public interface IAdminService
     Task<Book?> EditBookAsync(int id, Book book);
     Task<bool> DeleteBookAsync(int id);
     Task<OrdersViewModel> GetOrdersAsync();
+    Task<bool> UpdateOrdersAsync(string groupId, string newStatus);
 }
 
 public class AdminService : IAdminService
@@ -90,5 +91,18 @@ public class AdminService : IAdminService
         {
             Orders = groupedOrders
         };
+    }
+
+    public async Task<bool> UpdateOrdersAsync(string groupId, string newStatus)
+    {
+        var orders = _dbContext.Orders.Where(o => o.OrderGroupId == groupId);
+        foreach (var order in orders)
+        {
+            order.Status = newStatus;
+            order.UpdatedAt = DateTime.Now;
+        }
+
+        _dbContext.Orders.UpdateRange(orders);
+        return await _dbContext.SaveChangesAsync() > 0;
     }
 }

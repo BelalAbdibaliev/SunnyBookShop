@@ -88,4 +88,16 @@ public class AdminController: Controller
         var ordersVM = await _adminService.GetOrdersAsync();
         return View(ordersVM);
     }
+    
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateOrder(string groupId, string newStatus)
+    {
+        var result = await _adminService.UpdateOrdersAsync(groupId, newStatus);
+        if(!result)
+            return StatusCode(500);
+            
+        return RedirectToAction("Orders", "Admin");
+    }
 }
