@@ -91,4 +91,16 @@ public class BooksController: Controller
             return StatusCode(500);
         return RedirectToAction("Details", new { id = review.BookId });
     }
+
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteComment(int id, int bookId)
+    {
+        var result = await _bookService.DeleteCommentAsync(id);
+        if(!result)
+            return StatusCode(500);
+        
+        return RedirectToAction("Details", new { id = bookId });
+    }
 }

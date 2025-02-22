@@ -20,6 +20,7 @@ public interface IBookService
     Task AddToCartAsync(CartItem cartItem);
     Task DeleteFromCartAsync(string userId, int bookId);
     Task<bool> AddCommentAsync(Review review);
+    Task<bool> DeleteCommentAsync(int id);
 }
 
 public class BookService: IBookService
@@ -176,5 +177,12 @@ public class BookService: IBookService
         await _dbContext.Reviews.AddAsync(review);
         var result = await _dbContext.SaveChangesAsync();
         return result > 0;
+    }
+
+    public async Task<bool> DeleteCommentAsync(int id)
+    {
+        Review review = new() { Id = id };
+        _dbContext.Entry(review).State = EntityState.Deleted;
+        return await _dbContext.SaveChangesAsync() > 0;
     }
 }
