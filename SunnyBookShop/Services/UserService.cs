@@ -21,6 +21,7 @@ public interface IUserService
      Task<CheckoutViewModel> GetCheckoutViewModelAsync(int? userId);
      Task<List<Order>> CheckOut(int userId, decimal totalPrice);
      Task<bool> EditUserProfileAsync(int userId ,UserProfile userProfile);
+     Task<List<List<Order>>> GetPurchasesHistoryAsync(int userId);
 }
 
 public class UserService: IUserService
@@ -213,5 +214,18 @@ public class UserService: IUserService
             return true;
         
         return false;
+    }
+
+    public async Task<List<List<Order>>> GetPurchasesHistoryAsync(int userId)
+    {
+        var orders = await _dbContext.Orders
+            .Include(o => o.Book)
+            .Where(o => o.UserId == userId)
+            .Where(o => o.Status == "Delivered" || o.Status == "Cancelled")
+            .GroupBy(o => o.OrderGroupId)
+            .Select(g => g.ToList())
+            .ToListAsync();
+
+        return orders;
     }
 }

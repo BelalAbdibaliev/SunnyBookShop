@@ -95,4 +95,14 @@ public class UserController: Controller
         
         return RedirectToAction("Profile", new { Id = userId });
     }
+    
+    [Authorize]
+    public async Task<IActionResult> PurchaseHistory()
+    {
+        int userId = int.Parse(User.FindFirst("UserId")?.Value!);
+
+        var orders = await _userService.GetPurchasesHistoryAsync(userId);
+
+        return View(orders);
+    }
 }
