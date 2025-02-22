@@ -1,0 +1,54 @@
+﻿@model SunnyBookShop.ViewModels.OrdersViewModel
+@{
+    ViewData["Title"] = "Orders Control";
+}
+
+<link rel="stylesheet" href="~/css/admin/admin.css" asp-append-version="true"/>
+
+<p class="header-text-theme">Orders Control</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Group Id</th>
+        <th scope="col">Items count</th>
+        <th scope="col">Summary</th>
+        <th scope="col">Created</th>
+        <th scope="col">Last modified</th>
+        <th scope="col">Status</th>
+        <th scope="col">Controls</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var orderGroup in Model.Orders)
+    {
+        <tr>
+            <td>@orderGroup.First().OrderGroupId</td>
+            <td>@orderGroup.Count</td>
+            <td>@orderGroup.First().Total$</td>
+            <td>@orderGroup.First().CreatedAt.ToShortDateString()</td>
+            <td>@orderGroup.First().UpdatedAt.ToShortDateString()</td>
+            <td>@orderGroup.First().Status</td>
+            <td>
+                <div class="d-flex gap-1">
+                    <form asp-action="UpdateOrder" asp-controller="Admin" method="post">
+                        <div class="d-flex gap-1">
+                            <input type="hidden" name="groupId" value="@orderGroup.First().OrderGroupId"/>
+                            <select name="newStatus" class="form-select">
+                                <option>Waiting for dispatch</option>
+                                <option>On the way</option>
+                                <option>Delivered</option>
+                                <option>Cancelled</option>
+                            </select>
+                            <button type="submit" class="btn btn-danger">Save</button>
+                        </div>
+                    </form>
+                    <form asp-action="DeleteOrder" asp-controller="Admin" method="post">
+                        <input type="hidden" name="groupId" value="@orderGroup.First().OrderGroupId"/>
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
