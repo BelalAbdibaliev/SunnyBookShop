@@ -80,4 +80,15 @@ public class BooksController: Controller
         
         return RedirectToAction("Cart", "User");
     }
+    
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddComment([Bind("UserId, BookId, Regard, Body")] Review review)
+    {
+        var result = await _bookService.AddCommentAsync(review);
+        if (!result)
+            return StatusCode(500);
+        return RedirectToAction("Details", new { id = review.BookId });
+    }
 }

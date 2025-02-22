@@ -19,6 +19,7 @@ public interface IBookService
     Task<BookDetailsViewModel> GetBookDetailsAsync(int id, string userId);
     Task AddToCartAsync(CartItem cartItem);
     Task DeleteFromCartAsync(string userId, int bookId);
+    Task<bool> AddCommentAsync(Review review);
 }
 
 public class BookService: IBookService
@@ -168,5 +169,12 @@ public class BookService: IBookService
             _dbContext.CartItems.Remove(cartItem);
             await _dbContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<bool> AddCommentAsync(Review review)
+    {
+        await _dbContext.Reviews.AddAsync(review);
+        var result = await _dbContext.SaveChangesAsync();
+        return result > 0;
     }
 }
