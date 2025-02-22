@@ -157,10 +157,20 @@
 				<form asp-controller="Books" asp-action="AddComment" method="post">
 					<div class="book-review">
 						<div class="book-review-avatar-div">
-							<object class="book-review-avatar" data="~/assets/avatars/@Model.User?.Profile?.AvatarUrl"
-							        type="image/jpeg">
-								<img src="~/assets/aot.jpg" alt="poster"/>
-							</object>
+							@if (@Model.User.Profile.AvatarUrl is not null)
+							{
+								<object class="book-review-avatar" data="@Model.User?.Profile?.AvatarUrl"
+								        type="image/jpeg">
+									<img src="@Model.User?.Profile?.AvatarUrl" alt="poster"/>
+								</object>
+							}
+							else
+							{
+								<object class="book-review-avatar" data="~/assets/avatars/@Model.User?.Profile?.AvatarUrl"
+								        type="image/jpeg">
+									<img src="~/assets/aot.jpg" alt="poster"/>
+								</object>
+							}
 						</div>
 						<div class="book-review-user">
 							<p class="book-review-username">
