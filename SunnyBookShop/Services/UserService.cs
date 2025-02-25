@@ -13,7 +13,7 @@ namespace SunnyBookShop.Services;
 
 public interface IUserService
 {
-     Task<User?> AuthenticateAsync(string email, string password);
+     Task<User?> FindByEmailAsync(string email);
      Task Login(User user, HttpContext httpContext);
      Task<Result<ClaimsPrincipal>> SignUp(User user);
      Task<IEnumerable<CartItem>> GetCartItemsAsync(string userId);
@@ -37,10 +37,10 @@ public class UserService: IUserService
         _photoService = photoService;
     }
     
-    public async Task<User?> AuthenticateAsync(string email, string password)
+    public async Task<User?> FindByEmailAsync(string email)
     {
         return await _dbContext.Users.FirstOrDefaultAsync(u =>
-            u.Email == email && u.Password == password);
+            u.Email == email);
     }
 
     public async Task Login(User user, HttpContext httpContext)
