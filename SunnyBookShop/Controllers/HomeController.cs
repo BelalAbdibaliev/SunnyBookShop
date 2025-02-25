@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Models;
 using SunnyBookShop.Persistence;
 using SunnyBookShop.Services;
+using SunnyBookShop.ViewModels;
 
 namespace SunnyBookShop.Controllers;
 
@@ -45,7 +46,7 @@ public class HomeController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login([Bind("Email", "Password")] User inputData, string? ReturnUrl)
+    public async Task<IActionResult> Login(LoginViewModel inputData, string? ReturnUrl)
     {
         User? user = await _userService.FindByEmailAsync(inputData.Email);
         if (user is null)
