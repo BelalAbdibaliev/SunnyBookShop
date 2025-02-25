@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Interfaces;
 using SunnyBookShop.Models;
@@ -72,11 +73,15 @@ public class UserService: IUserService
         {
             return Result<ClaimsPrincipal>.Failure(errors);
         }
+        
+        var passwordHasher = new PasswordHasher<User>(); 
+        string hashedPassword = passwordHasher.HashPassword(null, user.Password);
 
         var newUser = new User
         {
             Email = user.Email,
             Password = user.Password,
+            PasswordHash = hashedPassword,
             Profile = new UserProfile(),
             Role = "User"
         };

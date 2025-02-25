@@ -297,9 +297,6 @@ public static class Seed
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
-        if(context.Users is not null)
-            return;
-        
         context.Users.AddRange(
             new User
             {

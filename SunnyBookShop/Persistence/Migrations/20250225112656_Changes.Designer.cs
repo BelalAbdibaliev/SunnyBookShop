@@ -12,8 +12,8 @@ using SunnyBookShop.Persistence;
 namespace SunnyBookShop.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250211101917_UserProfileTableAdded")]
-    partial class UserProfileTableAdded
+    [Migration("20250225112656_Changes")]
+    partial class Changes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,9 @@ namespace SunnyBookShop.Persistence.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
