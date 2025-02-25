@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SunnyBookShop.Models;
 
 namespace SunnyBookShop.Persistence;
@@ -296,12 +297,16 @@ public static class Seed
     {
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var passwordHasher = new PasswordHasher<User>(); 
+        string hashedPassword = passwordHasher.HashPassword(null, "malenok");
+        string hashedPassword2 = passwordHasher.HashPassword(null, "myadmin");
         
         context.Users.AddRange(
             new User
             {
                 Email = "user@mail.ru",
                 Password = "malenok",
+                PasswordHash = hashedPassword,
                 Role = "User",
                 Profile = new UserProfile
                 {
@@ -314,6 +319,7 @@ public static class Seed
             {
                 Email = "admin@gmail.ru",
                 Password = "myadmin",
+                PasswordHash = hashedPassword2,
                 Role = "Admin",
                 Profile = new UserProfile()
             }
