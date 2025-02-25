@@ -47,14 +47,16 @@ public class HomeController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login([Bind("Email", "Password")] User inputData, string? ReturnUrl)
     {
-        User? user = await _userService.AuthenticateAsync(inputData.Email, inputData.Password);
+        User? user = await _userService.FindByEmailAsync(inputData.Email);
         if (user is null)
         {
             ModelState.AddModelError(inputData.Email, "Invalid Email or Password Address");
             return View(inputData);
         }
         
-        await _userService.Login(user, HttpContext);
+        var result = await _userService.Login(user, inputData.Password, HttpContext);
+        if(!result)
+            return View(inputData);
 
         return LocalRedirect(ReturnUrl ?? "/");
     }

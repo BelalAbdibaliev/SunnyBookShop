@@ -13,7 +13,7 @@ public class User
     [DataType(DataType.Password), MinLength(6), Required]
     public string Password { get; set; } = null!;
 
-    public string? PasswordHash { get; set; } = null!;
+    public string? PasswordHash { get; set; } = "NONE";
 
     [NotMapped]
     [Required(ErrorMessage = "Confirmation Password is required.")]

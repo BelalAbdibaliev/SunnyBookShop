@@ -14,7 +14,7 @@ namespace SunnyBookShop.Services;
 public interface IUserService
 {
      Task<User?> FindByEmailAsync(string email);
-     Task Login(User user, HttpContext httpContext);
+     Task<bool> Login(User user, string enteredPassword, HttpContext httpContext);
      Task<Result<ClaimsPrincipal>> SignUp(User user);
      Task<IEnumerable<CartItem>> GetCartItemsAsync(string userId);
      Task<ProfileViewModel> GetUserAsync(int userId);
@@ -43,8 +43,13 @@ public class UserService: IUserService
             u.Email == email);
     }
 
-    public async Task Login(User user, HttpContext httpContext)
+    public async Task<bool> Login(User user, string enteredPassword, HttpContext httpContext)
     {
+        var passwordHasher = new PasswordHasher<User>();
+        var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, enteredPassword);
+        if (result != PasswordVerificationResult.Success)
+            return false;
+        
         var claims = new List<Claim>
         {
             new Claim("UserId", user.Id.ToString()),
@@ -53,6 +58,8 @@ public class UserService: IUserService
         };
         var claimsIdentity = new ClaimsIdentity(claims, authScheme);
         await httpContext.SignInAsync(authScheme, new ClaimsPrincipal(claimsIdentity));
+        
+        return true;
     }
 
     public async Task<Result<ClaimsPrincipal>> SignUp(User user)
