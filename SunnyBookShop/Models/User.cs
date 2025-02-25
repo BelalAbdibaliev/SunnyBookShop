@@ -11,6 +11,7 @@ public class User
     public string Email { get; set; } = null!;
 
     [DataType(DataType.Password), MinLength(6), Required]
+    [NotMapped]
     public string Password { get; set; } = null!;
 
     public string? PasswordHash { get; set; } = "NONE";
