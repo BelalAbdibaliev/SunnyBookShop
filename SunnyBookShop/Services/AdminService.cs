@@ -17,6 +17,7 @@ public interface IAdminService
     Task<OrdersViewModel> GetOrdersAsync();
     Task<bool> UpdateOrdersAsync(string groupId, string newStatus);
     Task<bool> DeleteUserAsync(int id, HttpContext httpContext);
+    Task<bool> DeleteOrderAsync(string groupId);
 }
 
 public class AdminService : IAdminService
@@ -116,6 +117,16 @@ public class AdminService : IAdminService
             return false;
         _dbContext.Users.Remove(user);
         await httpContext.SignOutAsync();
+        return await _dbContext.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> DeleteOrderAsync(string groupId)
+    {
+        var order = await _dbContext.Orders.FirstOrDefaultAsync(g => g.OrderGroupId == groupId);
+        if(order is null)
+            return false;
+        
+        _dbContext.Orders.Remove(order);
         return await _dbContext.SaveChangesAsync() > 0;
     }
 }

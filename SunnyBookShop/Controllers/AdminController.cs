@@ -104,6 +104,18 @@ public class AdminController: Controller
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteOrder(string groupId)
+    {
+        var result = await _adminService.DeleteOrderAsync(groupId);
+        if(!result)
+            return BadRequest(500);
+        
+        return RedirectToAction("Orders", "Admin");
+    }
+    
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteUser(int id)
     {
         var result = await _adminService.DeleteUserAsync(id, HttpContext);
